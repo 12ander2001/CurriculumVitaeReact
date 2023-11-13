@@ -1,20 +1,24 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LoginView from './components/LoginView';
 import RegisterView from './components/RegisterView';
-import CurriculumVitaeView from './components/CurriculumVitae';
+import Home from './components/Home';
+import CurriculumVitaeCreate from './components/CurriculumVitaeCreate';
+import CurriculumVitaeVisual from './components/CurriculumVitaeVisual'
 
 function App() {
   return (
-    <BrowserRouter>
+    <Router>
       <div className="App">
         <Routes>
           <Route path="/" element={<LoginView />} />
           <Route path="/register" element={<RegisterView />} />
-          <Route path="/CurriculumVitae" element={<CurriculumVitaeView />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/crear-curriculum" element={<CurriculumVitaeCreate />} />
+          <Route path="/curriculum-vitae" element={<CurriculumVitaeVisual />} />
         </Routes>
       </div>
-    </BrowserRouter>
+    </Router>
   );
 }
 

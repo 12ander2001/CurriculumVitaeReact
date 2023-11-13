@@ -19,7 +19,7 @@ const Login = () => {
 
       localStorage.setItem('authToken', response.data.token);
       axios.defaults.headers.common['Authorization'] = `Token ${response.data.token}`;
-      navigate('/CurriculumVitae');
+      navigate('/Home');
     } catch (error) {
       if (error.response && error.response.data) {
         setError(error.response.data.error);
