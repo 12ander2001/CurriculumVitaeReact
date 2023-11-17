@@ -1,25 +1,19 @@
 import React from 'react';
-import CurriculumVitaeForm from './CurriculumVitaeForm';
-import axios from 'axios';
+import WorkExperience from './WorkExperience';
+import Education from './Education';
+import Interests from './Interests';
+import Skills from './Skills';
 
-const CurriculumVitaeCreate = () => {
-  const handleSave = async () => {
-    try {
-      await axios.post('http://localhost:8000/curriculumvitae/curriculumvitae', {
-      });
-
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
+const CurriculumVitaeForm = () => {
   return (
     <div>
-      <h1>Create Curriculum Vitae</h1>
-      <CurriculumVitaeForm />
-      <button onClick={handleSave}>Save Curriculum Vitae</button>
+      <h1>Curriculum Vitae Form</h1>
+      <WorkExperience />
+      <Education />
+      <Interests />
+      <Skills />
     </div>
   );
 };
 
-export default CurriculumVitaeCreate;
+export default CurriculumVitaeForm;
