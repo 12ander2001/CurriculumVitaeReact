@@ -10,7 +10,10 @@ const Skills = () => {
 
  // Obtén el token del almacenamiento local
  useEffect(() => {
- const token = localStorage.getItem('token');
+ const token = localStorage.getItem('authToken');
+ const curriculumId = localStorage.getItem('curriculumId');
+ console.log(curriculumId)
+ console.log('Token:', token);
  setToken(token);
  }, []);
 
@@ -28,9 +31,10 @@ const Skills = () => {
    'Authorization': `Token ${token}`
  }
  });
- 
  if (response.data.length > 0) {
- const curriculumId = response.data[0].id;
+ const curriculumId = response.data.id;
+ console.log(curriculumId)
+ console.log(response.data.id)
  setCurriculumId(curriculumId);
  } else {
  console.error('El usuario no tiene un currículo.');
@@ -43,11 +47,10 @@ const Skills = () => {
 
  const data = { name, assessment, curriculum_id: curriculumId };
  console.log('Data to be sent:', data); // Imprime los datos que se enviarán
-
  const responsePost = await axios.post('http://localhost:8000/curriculumvitae/skills/', data, { headers });
 
  // Accede al id correctamente
- console.log('Id del objeto creado:', responsePost.data.data.id);
+ console.log('Id del objeto creado:', responsePost.data);
 
  setName('');
  setAssessment('');
