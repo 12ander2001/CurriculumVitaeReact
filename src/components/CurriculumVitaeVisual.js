@@ -1,34 +1,43 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 const CurriculumVitaeVisual = () => {
-  const [curriculumVitae, setCurriculumVitae] = useState(null);
-
+  const [users, setUsers] = useState([]);
+  
   useEffect(() => {
-    const fetchCurriculumVitae = async () => {
-      try {
-        // Obtener los datos del currículum desde la API
-        const response = await axios.get('');
-
-        // Guardar los datos en el estado
-        setCurriculumVitae(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchCurriculumVitae();
-  }, []);
-
-  if (!curriculumVitae) {
-    return <div>Loading...</div>;
-  }
+    const token = localStorage.getItem('authToken');
+    const userId = localStorage.getItem('userId');
+   
+    if (token && userId) {
+      const fetchUsers = async () => {
+        try {
+          const response = await axios.get('http://localhost:8000/user/users/', {
+            headers: {
+              'Authorization': `Token ${token}`
+            }
+          });
+          console.log(response.data);
+          setUsers(response.data);
+        } catch (error) {
+          console.error('Error al obtener la lista de usuarios:', error);
+        }
+      };
+    
+      fetchUsers();
+    }
+    }, []);
 
   return (
     <div>
-      <h1>Curriculum Vitae</h1>
-      <p>Description: {curriculumVitae.description}</p>
-      {/* mostrar */}
+        <h1>Observa los Currículo de cada Usuario</h1>
+        <ul>
+    {users.map(user => (
+      <li key={user.id}>
+        <Link to={`/curriculum-vitae/${user.id}`}>{user.username}</Link>
+      </li>
+    ))}
+  </ul>
     </div>
   );
 };

@@ -1,68 +1,101 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-export default function Education() {
- const [education, setEducation] = useState({
-  nameinst: '',
-  title: '',
-  range: '',
-  curse: '',
-  description: '',
-  curriculum_id: '',
- });
+const Education = () => {
+ const [nameinst, setNameinst] = useState('');
+ const [title, setTitle] = useState('');
+ const [range, setRange] = useState('');
+ const [curse, setCurse] = useState('');
+ const [description, setDescription] = useState('');
+ const [error, setError] = useState('');
+ const [token, setToken] = useState(''); 
+ const [curriculumId, setCurriculumId] = useState(''); 
 
- const handleChange = (e) => {
-  setEducation({
-    ...education,
-    [e.target.name]: e.target.value,
-  });
- };
+ // Obtén el token del almacenamiento local
+ useEffect(() => {
+    const token = localStorage.getItem('authToken');
+    const curriculumId = localStorage.getItem('curriculumId');
+    console.log(curriculumId)
+    console.log('Token:', token);
+    setToken(token);
+    setCurriculumId(curriculumId);
+   }, []);
+  
 
- const handleSubmit = (e) => {
+ const handleSubmit = async (e) => {
  e.preventDefault();
- console.log(education);
- axios.post('http://localhost:8000/api/education/', education, {
-   headers: {
-     Authorization: `Token ${localStorage.getItem('token')}`,
-   },
- })
- .then(response => {
-   console.log(response.data);
- })
- .catch(error => {
-   console.log(error);
+
+ if (!nameinst || !title || !range || !curse || !description) {
+ setError('Please fill in all fields');
+ return;
+ }
+
+ try {
+ const response = await axios.get(`http://localhost:8000/curriculumvitae/curriculumvitae/`, {
+ headers: {
+  'Authorization': `Token ${token}`
+ }
  });
+ console.log(curriculumId)
+ if (response.data.length > 0) {
+ const curriculumId = response.data[0].id;
+ setCurriculumId(curriculumId);
+ } else {
+ console.error('El usuario no tiene un currículo.');
+ }
+
+ const headers = {
+ 'Authorization': `Token ${token}`,
+ 'Content-Type': 'application/json'
  };
- 
+
+ const data = { nameinst, title, range, curse, description, curriculum: curriculumId };
+ console.log('Data to be sent:', data); // Imprime los datos que se enviarán
+ const responsePost = await axios.post('http://localhost:8000/curriculumvitae/education/', data, { headers });
+
+ // Accede al id correctamente
+ console.log('Id del objeto creado:', responsePost.data);
+
+ setNameinst('');
+ setTitle('');
+ setRange('');
+ setCurse('');
+ setDescription('');
+ setError('');
+ } catch (error) {
+ console.error(error);
+ }
+ };
 
  return (
-  <form onSubmit={handleSubmit}>
-    <h2>Education</h2>
-    <label>
-      Nameinst:
-      <input type="text" name="nameinst" onChange={handleChange} />
-    </label>
-    <label>
-      Title:
-      <input type="text" name="title" onChange={handleChange} />
-    </label>
-    <label>
-      Range:
-      <input type="text" name="range" onChange={handleChange} />
-    </label>
-    <label>
-      Curse:
-      <input type="text" name="curse" onChange={handleChange} />
-    </label>
-    <label>
-      Description:
-      <textarea name="description" onChange={handleChange} />
-    </label>
-    <label>
-      Curriculum ID:
-      <input type="text" name="curriculum_id" onChange={handleChange} />
-    </label>
-    <button type="submit">Submit</button>
-  </form>
+ <div>
+ <h2>Education</h2>
+ {error && <p>{error}</p>}
+ <form onSubmit={handleSubmit}>
+ <label>
+  Nameinst:
+  <input type="text" value={nameinst} onChange={(e) => setNameinst(e.target.value)} />
+ </label>
+ <label>
+  Title:
+  <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
+ </label>
+ <label>
+  Range:
+  <input type="text" value={range} onChange={(e) => setRange(e.target.value)} />
+ </label>
+ <label>
+  Curse:
+  <input type="text" value={curse} onChange={(e) => setCurse(e.target.value)} />
+ </label>
+ <label>
+  Description:
+  <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} />
+ </label>
+ <button type="submit">Submit</button>
+ </form>
+ </div>
  );
-}
+};
+
+export default Education;

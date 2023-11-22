@@ -1,34 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, {useState } from 'react';
+import {useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const Home = () => {
- const [users, setUsers] = useState([]);
  const [description, setDescription] = useState('');
  const navigate = useNavigate();
 
- useEffect(() => {
- const token = localStorage.getItem('authToken');
- const userId = localStorage.getItem('userId');
-
- if (token && userId) {
-   const fetchUsers = async () => {
-     try {
-       const response = await axios.get('http://localhost:8000/user/users/', {
-         headers: {
-           'Authorization': `Token ${token}`
-         }
-       });
-       console.log(response.data);
-       setUsers(response.data);
-     } catch (error) {
-       console.error('Error al obtener la lista de usuarios:', error);
-     }
-   };
- 
-   fetchUsers();
+ const handleClick = () => {
+  navigate("/curriculum-vitae");
  }
- }, []);
 
  const handleSubmit = async (e) => {
   e.preventDefault();
@@ -107,7 +87,7 @@ const Home = () => {
      const response = await axios.get(`http://localhost:8000/curriculumvitae/curriculumvitae/${userId}/`, {
        headers: {
          'Authorization': `Token ${token}`
-       }
+       }  
      });
  
      if (response.data.length > 0) {
@@ -130,14 +110,6 @@ const Home = () => {
 
  return (
  <div>
-   <h1>Observa los Currículo de cada Usuario</h1>
-   <ul>
- {users.map(user => (
-  <li key={user.id}>
-    <Link to={`/curriculum-vitae/${user.id}`}>{user.username}</Link>
-  </li>
- ))}
-</ul>
    <h1>Crear tu Propio Currículo</h1>
    <form onSubmit={handleSubmit}>
    <label htmlFor="nameinst">Name Curriculum:</label>
@@ -154,7 +126,7 @@ const Home = () => {
        Crear Currículo
      </button>
    </form>
-   <h1>Actualizar o Eliminar tu Currículo</h1>
+   <h1>Actualizar, Eliminar o Visualizar Currículo</h1>
   <form>
     <button
       type="button"
@@ -169,6 +141,13 @@ const Home = () => {
       style={{ padding: '10px 20px', backgroundColor: 'red', color: 'white', border: 'none', borderRadius: '5px' }}
     >
       Eliminar Currículo
+    </button>
+    <button 
+    type="button"
+    onClick={handleClick}
+    style={{ padding: '10px 20px', backgroundColor: 'black', color: 'white', border: 'none', borderRadius: '5px' }}
+    >
+      Visualizar Curriculos
     </button>
   </form>
  </div>

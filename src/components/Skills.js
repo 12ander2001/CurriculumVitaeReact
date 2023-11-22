@@ -6,15 +6,16 @@ const Skills = () => {
  const [assessment, setAssessment] = useState('');
  const [error, setError] = useState('');
  const [token, setToken] = useState(''); 
- const [curriculumId, setCurriculumId] = useState(''); 
+ const [curriculumId, setCurriculumId] = useState(); 
 
  // Obtén el token del almacenamiento local
  useEffect(() => {
- const token = localStorage.getItem('authToken');
- const curriculumId = localStorage.getItem('curriculumId');
- console.log(curriculumId)
- console.log('Token:', token);
- setToken(token);
+  const token = localStorage.getItem('authToken');
+  const curriculumId = localStorage.getItem('curriculumId');
+  console.log(curriculumId)
+  console.log('Token:', token);
+  setToken(token);
+  setCurriculumId(curriculumId);
  }, []);
 
  const handleSubmit = async (e) => {
@@ -22,6 +23,7 @@ const Skills = () => {
 
  if (!name || !assessment) {
  setError('Please fill in all fields');
+
  return;
  }
 
@@ -31,10 +33,9 @@ const Skills = () => {
    'Authorization': `Token ${token}`
  }
  });
- if (response.data.length > 0) {
- const curriculumId = response.data.id;
  console.log(curriculumId)
- console.log(response.data.id)
+ if (response.data.length > 0) {
+ const curriculumId = response.data[0].id;
  setCurriculumId(curriculumId);
  } else {
  console.error('El usuario no tiene un currículo.');
@@ -45,7 +46,7 @@ const Skills = () => {
  'Content-Type': 'application/json'
  };
 
- const data = { name, assessment, curriculum_id: curriculumId };
+ const data = { name, assessment, curriculum: curriculumId };
  console.log('Data to be sent:', data); // Imprime los datos que se enviarán
  const responsePost = await axios.post('http://localhost:8000/curriculumvitae/skills/', data, { headers });
 
