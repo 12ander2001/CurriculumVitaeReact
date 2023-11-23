@@ -43,70 +43,64 @@ const Home = () => {
   }
  };
 
- const handleUpdate = async () => {
-  try {
-    const token = localStorage.getItem('authToken');
-    const userId = localStorage.getItem('userId');
-  
-    if (token && userId) {
-      // Obtener el curriculumId del currículo del usuario autenticado
-      const response = await axios.get(`http://localhost:8000/curriculumvitae/curriculumvitae/${userId}/`, {
-        headers: {
-          'Authorization': `Token ${token}`
-        }
-      });
-  
-      if (response.data.length > 0) {
-        const curriculumId = response.data[0].id;
-  
-        await axios.put(`http://localhost:8000/curriculumvitae/curriculumvitae/${curriculumId}/`, {
-          id_user: userId,
+ const handleUpdate = async (e) => {
+  e.preventDefault();
+  if (description) {
+    try {
+      const token = localStorage.getItem('authToken');
+      const curriculumId = localStorage.getItem('curriculumId');
+ 
+      if (token && curriculumId) {
+        console.log('Curriculum ID:', curriculumId);
+        console.log({
+          id_user: curriculumId,
+          description: description
+        });
+        console.log('Token:', token);
+        const response = await axios.put(`http://localhost:8000/curriculumvitae/curriculumvitae/${curriculumId}/`, {
+          id_user: curriculumId,
           description: description
         }, {
           headers: {
             'Authorization': `Token ${token}`
           }
         });
+ 
+        console.log('Objeto devuelto por mi backend:', response);
+        // Actualizar el ID del currículum en el almacenamiento local
+        localStorage.setItem('curriculumId', response.data.id);
         navigate('/crear-curriculum');
-      } else {
-        console.error('El usuario no tiene un currículo.');
       }
+    } catch (error) {
+      console.error('Error al actualizar el currículum:', error);
     }
-  } catch (error) {
-    console.error('Error al actualizar el currículum:', error);
   }
-  };
-  
-  const handleDelete = async () => {
- try {
-   const token = localStorage.getItem('authToken');
-   const userId = localStorage.getItem('userId');
+ };
  
-   if (token && userId) {
-     // Obtener el curriculumId del currículo del usuario autenticado
-     const response = await axios.get(`http://localhost:8000/curriculumvitae/curriculumvitae/${userId}/`, {
-       headers: {
-         'Authorization': `Token ${token}`
-       }  
-     });
- 
-     if (response.data.length > 0) {
-       const curriculumId = response.data[0].id;
- 
-       await axios.delete(`http://localhost:8000/curriculumvitae/curriculumvitae/${curriculumId}/`, {
+  const handleDelete = async (e) => {
+    e.preventDefault();
+    try {
+     const token = localStorage.getItem('authToken');
+     const curriculumId = localStorage.getItem('curriculumId');
+   
+     if (token && curriculumId) {
+       console.log('Curriculum ID:', curriculumId);
+       console.log('Token:', token);
+       const response = await axios.delete(`http://localhost:8000/curriculumvitae/curriculumvitae/${curriculumId}/`, {
          headers: {
            'Authorization': `Token ${token}`
          }
        });
-       navigate('/crear-curriculum');
-     } else {
-       console.error('El usuario no tiene un currículo.');
+   
+       console.log('Objeto devuelto por mi backend:', response);
+       // Eliminar el ID del currículum del almacenamiento local
+       localStorage.removeItem('curriculumId');
      }
-   }
- } catch (error) {
-   console.error('Error al eliminar el currículum:', error);
- }
-};
+    } catch (error) {
+     console.error('Error al eliminar el currículum:', error);
+    }
+   };
+   
 
  return (
  <div>

@@ -23,7 +23,7 @@ const Login = () => {
     localStorage.setItem('authToken', response.data.token);
     localStorage.setItem('userId', response.data.user_id); // Asegúrate de que 'user_id' es el nombre correcto del campo en la respuesta del servidor
     axios.defaults.headers.common['Authorization'] = `Token ${response.data.token}`;
-    navigate('/ContactInfo');
+    navigate('/create-contact');
   } catch (error) {
     if (error.response && error.response.data) {
       setError(error.response.data.error);

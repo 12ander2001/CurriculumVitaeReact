@@ -7,6 +7,7 @@ import Home from './components/Home';
 import CurriculumVitaeCreate from './components/CurriculumVitaeCreate';
 import CurriculumVitaeVisual from './components/CurriculumVitaeVisual'
 import SocialLinks from './components/SocialLinks';
+import ConctactInfoCreate from './components/ConctactInfoCreate';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/crear-curriculum" element={<CurriculumVitaeCreate />} />
           <Route path="/curriculum-vitae" element={<CurriculumVitaeVisual />} />
           <Route path="/sociallinks" element={<SocialLinks />} />
+          <Route path="/create-contact" element={<ConctactInfoCreate />} />
         </Routes>
       </div>
     </Router>
