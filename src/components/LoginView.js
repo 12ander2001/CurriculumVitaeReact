@@ -23,7 +23,7 @@ const Login = () => {
     localStorage.setItem('authToken', response.data.token);
     localStorage.setItem('userId', response.data.user_id); // Asegúrate de que 'user_id' es el nombre correcto del campo en la respuesta del servidor
     axios.defaults.headers.common['Authorization'] = `Token ${response.data.token}`;
-    navigate('/create-contact');
+    navigate('/home');
   } catch (error) {
     if (error.response && error.response.data) {
       setError(error.response.data.error);
@@ -50,9 +50,9 @@ const Login = () => {
          value={password}
          onChange={(e) => setPassword(e.target.value)}
        />
-       <button type="submit">Iniciar sesión</button>
+       <button type="submit" style={{ padding: '10px 20px', backgroundColor: 'blue', color: 'white', border: 'none', borderRadius: '5px' }}>Iniciar sesión</button>
      </form>
-     <Link to="/register">Registrarse</Link>
+     <Link to="/register" style={{ padding: '10px 20px', backgroundColor: 'green', color: 'white', border: 'none', borderRadius: '5px' }}>Registrarse</Link>
    </div>
  );
 };

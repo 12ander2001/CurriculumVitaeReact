@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
-const CurriculumVitaeVisual = () => {
+const CurriculumVitaeVisualOthers = () => {
   const [users, setUsers] = useState([]);
   
   useEffect(() => {
@@ -42,4 +42,4 @@ const CurriculumVitaeVisual = () => {
   );
 };
 
-export default CurriculumVitaeVisual;
+export default CurriculumVitaeVisualOthers;

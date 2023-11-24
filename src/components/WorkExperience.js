@@ -8,12 +8,32 @@ const WorkExperience = () => {
  const [description, setDescription] = useState('');
  const [error, setError] = useState('');
  const [token, setToken] = useState(''); 
- const [curriculumId, setCurriculumId] = useState(''); 
+ const [curriculumId, setCurriculumId] = useState('');
+ const [workexperience, setWorkExperience] = useState([]); 
 
  // Obtén el token del almacenamiento local
  useEffect(() => {
-    const token = localStorage.getItem('authToken');
-    const curriculumId = localStorage.getItem('curriculumId');
+  const curriculumId = Number(localStorage.getItem('curriculumId'));
+  const token = localStorage.getItem('authToken');
+ 
+  console.log('curriculumId:', curriculumId);
+  console.log('token:', token);
+  if (curriculumId && token) {
+   axios.get(`http://localhost:8000/curriculumvitae/workexperience/`, {
+     headers: {
+       'Authorization': `Token ${token}`
+     }
+   })
+   .then(response => {
+     // Filtrar los resultados por contactId
+     const filteredResults = response.data.filter(item => item.curriculum === curriculumId);
+     console.log('WorkExperience:', filteredResults);
+     setWorkExperience(filteredResults);
+   })
+   .catch(error => {
+     console.error('Error al obtener las Experiencias de Trabajo:', error);
+   });
+  };
     console.log(curriculumId)
     console.log('Token:', token);
     setToken(token);
@@ -23,6 +43,11 @@ const WorkExperience = () => {
 
  const handleSubmit = async (e) => {
  e.preventDefault();
+
+ //if (!curriculumId) {
+ // alert('Por favor inserte el nombre de su currículo.');
+ // return;
+//}
 
  if (!name || !place || !range || !description) {
  setError('Please fill in all fields');
@@ -59,10 +84,73 @@ const WorkExperience = () => {
  setPlace('');
  setRange('');
  setDescription('');
- setError('');
+ setError('Experiencia de Trabajo insertada con éxito');
+ setWorkExperience(prevLinks => [...prevLinks, responsePost.data]);
+
  } catch (error) {
  console.error(error);
  }
+ };
+
+ const handleUpdate = async (id) => {
+  try {
+
+   const response = await axios.put(`http://localhost:8000/curriculumvitae/workexperience/${id}/`, {
+     name,
+     place,
+     range,
+     description,
+     curriculum: localStorage.getItem('curriculumId'),
+   }, {
+     headers: {
+       'Authorization': `Token ${token}`,
+       'Content-Type': 'application/json'
+     }
+   });
+   console.log('WorkExperience actualizado:', response.data);
+
+   setName('');
+   setPlace('');
+   setRange('');
+   setDescription('');
+   setError('Experiencia de Trabajo actualizada con éxito');
+   setWorkExperience(prevLinks => prevLinks.map(link => link.id === id ? response.data : link));
+
+  } catch (error) {
+   document.getElementById('error-message').textContent = 'Error al actualizar la Experiencia de Trabajo: ' + error.message;
+  }
+  
+ };
+ 
+
+const handleDelete = async (id) => {
+  try {
+    const response = await axios.delete(`http://localhost:8000/curriculumvitae/workexperience/${id}/`, {
+      headers: {
+        'Authorization': `Token ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    console.log('WorkExperience eliminado:', response.data);
+
+    setName('');
+    setPlace('');
+    setRange('');
+    setDescription('');
+    setError('Experiencia de trabajo eliminada con éxito');
+    setWorkExperience(prevLinks => prevLinks.filter(link => link.id !== id));
+
+  } catch (error) {
+    console.error('Error al eliminar la Experiencia de Trabajo:', error);
+  }
+};
+
+const handleLinkClick = (event, link) => {
+  event.preventDefault(); // Evita que la página se refresque
+  setName(link.name);
+  setPlace(link.place);
+  setRange(link.range);
+  setDescription(link.description);
  };
 
  return (
@@ -86,8 +174,19 @@ const WorkExperience = () => {
  Description:
  <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} />
  </label>
- <button type="submit">Submit</button>
+ <button type="submit" style={{ padding: '10px 20px', backgroundColor: 'blue', color: 'white', border: 'none', borderRadius: '5px' }}>Insertar</button>
  </form>
+ <h1> Tus Experiencias de Trabajo </h1>
+  {workexperience.map((link) => (
+ <li key={link.id}>
+ <a href={link.place} onClick={(event) => handleLinkClick(event, link)}>Nombre: {link.name}</a>
+ <p>Plaza: {link.place}</p>
+ <p>Rango: {link.range}</p>
+ <p>Descripción: {link.description}</p>
+ <button type="button" onClick={() => handleUpdate(link.id)} style={{ padding: '10px 20px', backgroundColor: 'green', color: 'white', border: 'none', borderRadius: '5px' }}>Actualizar</button>
+ <button type="button" onClick={() => handleDelete(link.id)} style={{ padding: '10px 20px', backgroundColor: 'red', color: 'white', border: 'none', borderRadius: '5px' }}>Eliminar</button>
+</li>
+))}
  </div>
  );
 };

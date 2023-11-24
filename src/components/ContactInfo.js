@@ -29,10 +29,7 @@ function ContactInfo() {
       console.error('Error al obtener el contacto:', error);
     });
   }
- }, []);
- 
- 
- 
+},[]);
 
  const handleSubmit = async (e) => {
   e.preventDefault();
@@ -59,10 +56,18 @@ function ContactInfo() {
           }
         });
 
+          //Tratar de renderizar la vista en tiempo real
+          //setContactInfo(response.data); 
+
+        
         console.log('Objeto devuelto por mi backend:', response);
         // Guardar el ID del contacto en el almacenamiento local
         localStorage.setItem('contactId', response.data.id);
       }
+
+     setPhone('');
+     setDireccion('');
+
     } catch (error) {
       console.error('Error al guardar el contacto:', error);
     }
@@ -155,7 +160,7 @@ function ContactInfo() {
       <button
         type="submit"
         onClick={handleUpdate}
-        style={{ padding: '10px 20px', backgroundColor: 'blue', color: 'white', border: 'none', borderRadius: '5px' }}
+        style={{ padding: '10px 20px', backgroundColor: 'green', color: 'white', border: 'none', borderRadius: '5px' }}
       >
         Actualizar Contacto
       </button>
@@ -168,7 +173,7 @@ function ContactInfo() {
       </button>
     </form>
     <div>
-      <h1>Contact Info</h1>
+      <h1> Tu Contact Info</h1>
       {contactInfo && Object.keys(contactInfo).map(key => (
         <p key={key}>{key}: {contactInfo[key]}</p>
       ))}

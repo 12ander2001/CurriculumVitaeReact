@@ -45,8 +45,13 @@ const SocialLinks = () => {
  const handleSubmit = async (e) => {
    e.preventDefault();
 
+ //if (!contactId) {
+ //   alert('Por favor inserte su teléfono y dirección.');
+ //   return;
+ //}
+
    if (!nombre || !url) {
-     setError('Please fill in all fields');
+     setError('Inserte su red Social y su url');
      return;
    }
 
@@ -77,7 +82,8 @@ const SocialLinks = () => {
 
      setNombre('');
      setUrl('');
-     setError('');
+     setError('Enlace social insertado con éxito');
+     setSocialLinks(prevLinks => [...prevLinks, responsePost.data]);
      
    } catch (error) {
      console.error(error);
@@ -107,11 +113,19 @@ const SocialLinks = () => {
      }
    });
    console.log('Link social actualizado:', response.data);
+
+   setNombre('');
+   setUrl('');
+   setError('Enlace social actualizado con éxito');
+   setSocialLinks(prevLinks => prevLinks.map(link => link.id === id ? response.data : link));
+
   } catch (error) {
    document.getElementById('error-message').textContent = 'Error al actualizar el enlace social: ' + error.message;
   }
+  
  };
  
+
 const handleDelete = async (id) => {
   try {
     const response = await axios.delete(`http://localhost:8000/curriculumvitae/sociallinks/${id}/`, {
@@ -121,10 +135,22 @@ const handleDelete = async (id) => {
       }
     });
     console.log('Link social eliminado:', response.data);
+
+    setNombre('');
+    setUrl('');
+    setError('Enlace social eliminado con éxito');
+    setSocialLinks(prevLinks => prevLinks.filter(link => link.id !== id));
+
   } catch (error) {
     console.error('Error al eliminar el enlace social:', error);
   }
 };
+
+const handleLinkClick = (event, link) => {
+  event.preventDefault(); // Evita que la página se refresque
+  setNombre(link.nombre);
+  setUrl(link.url);
+ };
 
 
  return (
@@ -136,21 +162,23 @@ const handleDelete = async (id) => {
       Name:
       <input type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} />
     </label>
-    <label>
+    <label> 
     <div id="error-message"></div>
       URL:
       <input type="url" value={url} onChange={(e) => setUrl(e.target.value)} />
     </label>
-    <button type="submit">Submit</button>
+    <button type="submit" style={{ padding: '10px 20px', backgroundColor: 'blue', color: 'white', border: 'none', borderRadius: '5px' }}>Insertar</button>
   </form>
+  <h1> Tus Links Sociales </h1>
   {socialLinks.map((link) => (
  <li key={link.id}>
-   <a href={link.url}>{link.nombre}</a>
-   <p>{link.url}</p>
-   <button onClick={() => handleUpdate(link.id)}>Update</button>
-   <button onClick={() => handleDelete(link.id)}>Delete</button>
- </li>
+ <a href={link.url} onClick={(event) => handleLinkClick(event, link)}>Red Social: {link.nombre}</a>
+ <p>Enlace: {link.url}</p>
+ <button type="button" onClick={() => handleUpdate(link.id)} style={{ padding: '10px 20px', backgroundColor: 'green', color: 'white', border: 'none', borderRadius: '5px' }}>Actualizar</button>
+ <button type="button" onClick={() => handleDelete(link.id)} style={{ padding: '10px 20px', backgroundColor: 'red', color: 'white', border: 'none', borderRadius: '5px' }}>Eliminar</button>
+</li>
 ))}
+
 
  </div>
  

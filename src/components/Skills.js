@@ -7,11 +7,31 @@ const Skills = () => {
  const [error, setError] = useState('');
  const [token, setToken] = useState(''); 
  const [curriculumId, setCurriculumId] = useState(); 
+ const [skills, setSkills] = useState([]); 
 
  // Obtén el token del almacenamiento local
  useEffect(() => {
+  const curriculumId = Number(localStorage.getItem('curriculumId'));
   const token = localStorage.getItem('authToken');
-  const curriculumId = localStorage.getItem('curriculumId');
+ 
+  console.log('curriculumId:', curriculumId);
+  console.log('token:', token);
+  if (curriculumId && token) {
+   axios.get(`http://localhost:8000/curriculumvitae/skills/`, {
+     headers: {
+       'Authorization': `Token ${token}`
+     }
+   })
+   .then(response => {
+     // Filtrar los resultados por contactId
+     const filteredResults = response.data.filter(item => item.curriculum === curriculumId);
+     console.log('Skills:', filteredResults);
+     setSkills(filteredResults);
+   })
+   .catch(error => {
+     console.error('Error al obtener los enlaces sociales:', error);
+   });
+  };
   console.log(curriculumId)
   console.log('Token:', token);
   setToken(token);
@@ -20,6 +40,11 @@ const Skills = () => {
 
  const handleSubmit = async (e) => {
  e.preventDefault();
+
+ //if (!curriculumId) {
+ // alert('Por favor inserte el nombre de su currículo.');
+ // return;
+//}
 
  if (!name || !assessment) {
  setError('Please fill in all fields');
@@ -55,10 +80,64 @@ const Skills = () => {
 
  setName('');
  setAssessment('');
- setError('');
+ setError('Habilidad insertada con éxito');
+ setSkills(prevLinks => [...prevLinks, responsePost.data]);
  } catch (error) {
  console.error(error);
  }
+ };
+
+ const handleUpdate = async (id) => {
+  try {
+
+   const response = await axios.put(`http://localhost:8000/curriculumvitae/skills/${id}/`, {
+     name,
+     assessment,
+     curriculum: localStorage.getItem('curriculumId'),
+   }, {
+     headers: {
+       'Authorization': `Token ${token}`,
+       'Content-Type': 'application/json'
+     }
+   });
+   console.log('Skills actualizado:', response.data);
+
+   setName('');
+   setAssessment('');
+   setError('Habilidad actualizada con éxito');
+   setSkills(prevLinks => prevLinks.map(link => link.id === id ? response.data : link));
+
+  } catch (error) {
+   document.getElementById('error-message').textContent = 'Error al actualizar la Habilidad: ' + error.message;
+  }
+  
+ };
+ 
+
+const handleDelete = async (id) => {
+  try {
+    const response = await axios.delete(`http://localhost:8000/curriculumvitae/skills/${id}/`, {
+      headers: {
+        'Authorization': `Token ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    console.log('Skills eliminado:', response.data);
+
+    setName('');
+    setAssessment('');
+    setError('Habilidad eliminada con éxito');
+    setSkills(prevLinks => prevLinks.filter(link => link.id !== id));
+
+  } catch (error) {
+    console.error('Error al eliminar la Habilidad:', error);
+  }
+};
+
+const handleLinkClick = (event, link) => {
+  event.preventDefault(); // Evita que la página se refresque
+  setName(link.name);
+  setAssessment(link.assessment);
  };
 
  return (
@@ -74,8 +153,17 @@ const Skills = () => {
    Assessment:
    <input type="text" value={assessment} onChange={(e) => setAssessment(e.target.value)} />
  </label>
- <button type="submit">Submit</button>
+ <button type="submit" style={{ padding: '10px 20px', backgroundColor: 'blue', color: 'white', border: 'none', borderRadius: '5px' }}>Insertar</button>
  </form>
+ <h1>Habilidades</h1>
+  {skills.map((link) => (
+ <li key={link.id}>
+ <a href={link.assessment} onClick={(event) => handleLinkClick(event, link)}>Nombre: {link.name}</a>
+ <p>Habilidad: {link.assessment}</p>
+ <button type="button" onClick={() => handleUpdate(link.id)} style={{ padding: '10px 20px', backgroundColor: 'green', color: 'white', border: 'none', borderRadius: '5px' }}>Actualizar</button>
+ <button type="button" onClick={() => handleDelete(link.id)} style={{ padding: '10px 20px', backgroundColor: 'red', color: 'white', border: 'none', borderRadius: '5px' }}>Eliminar</button>
+</li>
+))}
  </div>
  );
 };
