@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
+import './CurriculumVitaeVisualMySelf.css';
 const CurriculumVitaeVisualMySelf = () => {
  const [contactInfo, setContactInfo] = useState([]);
  const [curriculumId, setCurriculumId] = useState(null);
@@ -191,8 +191,8 @@ useEffect(() => {
              }, []);
 
  return (
-   <div>
-     <div>
+   <div >
+     <div className='wrapper'>
        <h1> Tu Informacion de Contacto</h1>
        {contactInfo && (
          <div>
@@ -216,7 +216,7 @@ useEffect(() => {
          </div>
        )}
      </div>
-     <div>
+     <div className='wrapper'>
        <h1> Tu Curriculo</h1>
        {curriculumId && (
          <div>
@@ -228,7 +228,7 @@ useEffect(() => {
  <h1> Experiencias de Trabajo</h1>
  {workexperience && workexperience.map((link, index) => (
    <div key={index}>
-     <p>Nombre de la Institucion: {link.name}</p>
+     <p>Nombre de la Institución: {link.name}</p>
      <p>Plaza: {link.place}</p>
      <p>Rango: {link.range}</p>
      <p>Descripción: {link.description}</p>

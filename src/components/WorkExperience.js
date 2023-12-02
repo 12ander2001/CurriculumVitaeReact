@@ -154,39 +154,41 @@ const handleLinkClick = (event, link) => {
  };
 
  return (
- <div>
- <h2>Work Experience</h2>
+ <div className='wrapper'>
+ <h2>Experiencia de Trabajo</h2>
  {error && <p>{error}</p>}
  <form onSubmit={handleSubmit}>
  <label>
- Name:
+ Nombre de la Institución:
  <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
  </label>
  <label>
- Place:
+ Plaza:
  <input type="text" value={place} onChange={(e) => setPlace(e.target.value)} />
  </label>
  <label>
- Range:
+ Rango:
  <input type="text" value={range} onChange={(e) => setRange(e.target.value)} />
  </label>
  <label>
- Description:
+ Descripción:
  <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} />
  </label>
- <button type="submit" style={{ padding: '10px 20px', backgroundColor: 'blue', color: 'white', border: 'none', borderRadius: '5px' }}>Insertar</button>
+ <button type="submit" >Insertar</button>
  </form>
- <h1> Tus Experiencias de Trabajo </h1>
+ <div className='containercontact'>
+ <h1 className='titlecontact'> Mis Experiencias de Trabajo </h1>
   {workexperience.map((link) => (
  <li key={link.id}>
- <a href={link.place} onClick={(event) => handleLinkClick(event, link)}>Nombre: {link.name}</a>
- <p>Plaza: {link.place}</p>
- <p>Rango: {link.range}</p>
+ <a href={link.place} className='info' onClick={(event) => handleLinkClick(event, link)}>Nombre: {link.name}</a>
+ <p className='info'>Plaza: {link.place}</p>
+ <p className='info'>Rango: {link.range}</p>
  <p>Descripción: {link.description}</p>
- <button type="button" onClick={() => handleUpdate(link.id)} style={{ padding: '10px 20px', backgroundColor: 'green', color: 'white', border: 'none', borderRadius: '5px' }}>Actualizar</button>
- <button type="button" onClick={() => handleDelete(link.id)} style={{ padding: '10px 20px', backgroundColor: 'red', color: 'white', border: 'none', borderRadius: '5px' }}>Eliminar</button>
+ <button type="button" onClick={() => handleUpdate(link.id)} >Actualizar</button>
+ <button type="button" onClick={() => handleDelete(link.id)} >Eliminar</button>
 </li>
 ))}
+</div>
  </div>
  );
 };

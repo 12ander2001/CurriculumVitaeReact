@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
+import './LoginForm.css';
 
 const Login = () => {
  const [email, setEmail] = useState('');
@@ -9,52 +10,62 @@ const Login = () => {
  const navigate = useNavigate();
 
  const handleLogin = async (e) => {
-  e.preventDefault();
-  
-  try {
-    const response = await axios.post('http://localhost:8000/user/login/', {
-      email,
-      password,
-    });
-  
-    // Imprimir la respuesta en la consola
-    console.log(response);
+ e.preventDefault();
  
-    localStorage.setItem('authToken', response.data.token);
-    localStorage.setItem('userId', response.data.user_id); // Asegúrate de que 'user_id' es el nombre correcto del campo en la respuesta del servidor
-    axios.defaults.headers.common['Authorization'] = `Token ${response.data.token}`;
-    navigate('/home');
-  } catch (error) {
-    if (error.response && error.response.data) {
-      setError(error.response.data.error);
-    } else {
-      setError('Ocurrió un error al iniciar sesión');
-    }
-  }
+ try {
+   const response = await axios.post('http://localhost:8000/user/login/', {
+     email,
+     password,
+   });
+ 
+   console.log(response);
+   localStorage.setItem('authToken', response.data.token);
+   localStorage.setItem('userId', response.data.user_id); 
+   axios.defaults.headers.common['Authorization'] = `Token ${response.data.token}`;
+ 
+   if (response.data.user_id === 11) {
+     navigate('/curriculum-others');
+   } else {
+     navigate('/home');
+   }
+ } catch (error) {
+   if (error.response && error.response.data) {
+     setError(error.response.data.error);
+   } else {
+     setError('Ocurrió un error al iniciar sesión');
+   }
+ }
+ };
+
+ const handleLogout = () => {
+  localStorage.clear();
+ axios.defaults.headers.common['Authorization'] = null;
+ navigate('/');
  };
 
  return (
-   <div>
-     <h1>Iniciar sesión</h1>
-     {error && <p>{error}</p>}
-     <form onSubmit={handleLogin}>
-       <input
-         type="email"
-         placeholder="Correo electrónico"
-         value={email}
-         onChange={(e) => setEmail(e.target.value)}
-       />
-       <input
-         type="password"
-         placeholder="Contraseña"
-         value={password}
-         onChange={(e) => setPassword(e.target.value)}
-       />
-       <button type="submit" style={{ padding: '10px 20px', backgroundColor: 'blue', color: 'white', border: 'none', borderRadius: '5px' }}>Iniciar sesión</button>
-     </form>
-     <Link to="/register" style={{ padding: '10px 20px', backgroundColor: 'green', color: 'white', border: 'none', borderRadius: '5px' }}>Registrarse</Link>
-   </div>
- );
-};
+ <div className="login-form">
+   <h1>Iniciar sesión</h1>
+   {error && <p>{error}</p>}
+   <form onSubmit={handleLogin}>
+     <input
+       type="email"
+       placeholder="Correo electrónico"
+       value={email}
+       onChange={(e) => setEmail(e.target.value)}
+     />
+     <input
+       type="password"
+       placeholder="Contraseña"
+       value={password}
+       onChange={(e) => setPassword(e.target.value)}
+     />
+     <button type="submit">Iniciar sesión</button>
+   </form>
+   <button onClick={handleLogout}>Cerrar sesión</button>
+   <Link to="/register">Registrarse</Link>
+ </div>
+);
+}
 
 export default Login;

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import './ContactInfo.css'
 
 const SocialLinks = () => {
  const [nombre, setNombre] = useState('');
@@ -12,11 +13,11 @@ const SocialLinks = () => {
 
  // Obtén el token del almacenamiento local
  useEffect(() => {
- const contactId = Number(localStorage.getItem('contactId'));
+ const contactId = localStorage.getItem('contactId');
  const token = localStorage.getItem('authToken');
 
- console.log('contactId:', contactId);
- console.log('token:', token);
+ console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAA:', contactId);
+ console.log('BBBBBBBBBBBBBBBBBBBBBBBBBB:', token);
  if (contactId && token) {
   axios.get(`http://localhost:8000/curriculumvitae/sociallinks/`, {
     headers: {
@@ -25,7 +26,8 @@ const SocialLinks = () => {
   })
   .then(response => {
     // Filtrar los resultados por contactId
-    const filteredResults = response.data.filter(item => item.contact_info === contactId);
+    console.log(response.data.filter(({contact_info}) => contact_info == contactId));
+    const filteredResults = response.data.filter(item => item.contact_info == contactId);
     console.log('Social Links:', filteredResults);
     setSocialLinks(filteredResults);
   })
@@ -154,12 +156,12 @@ const handleLinkClick = (event, link) => {
 
 
  return (
-  <div>
-  <h2>Social Links</h2>
+  <div className='wrapper'>
+  <h1>Añadir Redes Sociales</h1>
   {error && <p>{error}</p>}
   <form onSubmit={handleSubmit}> 
     <label>
-      Name:
+      Nombre de la Red Social:
       <input type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} />
     </label>
     <label> 
@@ -167,19 +169,19 @@ const handleLinkClick = (event, link) => {
       URL:
       <input type="url" value={url} onChange={(e) => setUrl(e.target.value)} />
     </label>
-    <button type="submit" style={{ padding: '10px 20px', backgroundColor: 'blue', color: 'white', border: 'none', borderRadius: '5px' }}>Insertar</button>
+    <button type="submit" >Insertar</button>
   </form>
-  <h1> Tus Links Sociales </h1>
+  <div className='containercontact'>
+  <h1 className='titlecontact'> Mis Redes Sociales </h1>
   {socialLinks.map((link) => (
  <li key={link.id}>
- <a href={link.url} onClick={(event) => handleLinkClick(event, link)}>Red Social: {link.nombre}</a>
- <p>Enlace: {link.url}</p>
- <button type="button" onClick={() => handleUpdate(link.id)} style={{ padding: '10px 20px', backgroundColor: 'green', color: 'white', border: 'none', borderRadius: '5px' }}>Actualizar</button>
- <button type="button" onClick={() => handleDelete(link.id)} style={{ padding: '10px 20px', backgroundColor: 'red', color: 'white', border: 'none', borderRadius: '5px' }}>Eliminar</button>
+ <a href={link.url} className='info' onClick={(event) => handleLinkClick(event, link)}> {link.nombre}</a>
+ <p className='info'>Enlace: {link.url}</p>
+ <button type="button" onClick={() => handleUpdate(link.id)} >Actualizar</button>
+ <button type="button" onClick={() => handleDelete(link.id)} >Eliminar</button>
 </li>
 ))}
-
-
+</div>
  </div>
  
  );

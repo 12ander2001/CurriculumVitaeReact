@@ -141,29 +141,31 @@ const handleLinkClick = (event, link) => {
  };
 
  return (
- <div>
- <h2>Skills</h2>
+ <div className='wrapper'>
+ <h1>Habilidad</h1>
  {error && <p>{error}</p>}
  <form onSubmit={handleSubmit}>
  <label>
-   Name:
+   Nombre:
    <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
  </label>
  <label>
-   Assessment:
+   Descripcion de la habilidad:
    <input type="text" value={assessment} onChange={(e) => setAssessment(e.target.value)} />
  </label>
- <button type="submit" style={{ padding: '10px 20px', backgroundColor: 'blue', color: 'white', border: 'none', borderRadius: '5px' }}>Insertar</button>
+ <button type="submit" >Insertar</button>
  </form>
- <h1>Habilidades</h1>
+ <div className='containercontact'>
+ <h1 className='titlecontact'>Mis Habilidades</h1>
   {skills.map((link) => (
  <li key={link.id}>
- <a href={link.assessment} onClick={(event) => handleLinkClick(event, link)}>Nombre: {link.name}</a>
- <p>Habilidad: {link.assessment}</p>
- <button type="button" onClick={() => handleUpdate(link.id)} style={{ padding: '10px 20px', backgroundColor: 'green', color: 'white', border: 'none', borderRadius: '5px' }}>Actualizar</button>
- <button type="button" onClick={() => handleDelete(link.id)} style={{ padding: '10px 20px', backgroundColor: 'red', color: 'white', border: 'none', borderRadius: '5px' }}>Eliminar</button>
+ <a href={link.assessment} className='info' onClick={(event) => handleLinkClick(event, link)}>Nombre: {link.name}</a>
+ <p className='info'>Habilidad: {link.assessment}</p>
+ <button type="button" onClick={() => handleUpdate(link.id)} >Actualizar</button>
+ <button type="button" onClick={() => handleDelete(link.id)} >Eliminar</button>
 </li>
 ))}
+</div>
  </div>
  );
 };

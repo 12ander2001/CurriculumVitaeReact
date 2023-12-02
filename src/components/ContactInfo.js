@@ -1,40 +1,66 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import './ContactInfo.css'
 
+const userIdLocal = localStorage.getItem('userId');
+const contactIdLocal = localStorage.getItem('contactId');
+const token = localStorage.getItem('authToken');
 function ContactInfo() {
  const [phone, setPhone] = useState('');
  const [direccion, setDireccion] = useState('');
- const [contactInfo, setContactInfo] = useState(null);
+ const [contactId, setContactId] = useState(contactIdLocal);
+ const [contactinfo, setContactInfo] = useState(null);
+ 
+ const [userId, setUserId] = useState(userIdLocal);
+
+ const render = localStorage.getItem('userId', 'token', 'contactId');
+ console.log('Fuera userId:', userIdLocal);
+
+ const getAuthenticateUser = async ()=> {
+  const {data} = await axios.get('http://localhost:8000/user/users/')
+  console.log(data);// eslint-disable-next-line
+  setUserId( data.find(({id})=> id == userIdLocal).id)
+ }
+
+ const getContactInfoFromUserId = async () => {
+   const {data} = await axios.get(`http://localhost:8000/curriculumvitae/contactinfo/`, {
+    headers: {
+      'Authorization': `Token ${token}`
+    }
+  })
+  // eslint-disable-next-line
+  setContactId(data.find(({user})=> user == userIdLocal).id)
+  localStorage.setItem("contactId", contactId)
+ 
+ }
+ 
 
  useEffect(() => {
-  const userId = localStorage.getItem('userId');
-  const contactId = localStorage.getItem('contactId');
-  const token = localStorage.getItem('authToken');
- 
-  console.log('userId:', userId);
-  console.log('contactId:', contactId);
-  console.log('token:', token);
- 
-  if (userId && contactId && token) {
+  console.log("aaaaaaaaaaaaaa",userId, contactId);
+  getAuthenticateUser()
+  getContactInfoFromUserId()
+  if (userId && contactId) {
     axios.get(`http://localhost:8000/curriculumvitae/contactinfo/${contactId}/`, {
       headers: {
         'Authorization': `Token ${token}`
       }
     })
     .then(response => {
+      console.log(contactId)
       console.log('Contact Info:', response.data);
-      setContactInfo(response.data);
+      setContactInfo(response.data)
+      
     })
     .catch(error => {
       console.error('Error al obtener el contacto:', error);
     });
-  }
-},[]);
+  }// eslint-disable-next-line
+},[render, contactId, userId]);
 
  const handleSubmit = async (e) => {
   e.preventDefault();
   if (phone && direccion) {
-    try {
+    try { 
       const token = localStorage.getItem('authToken');
       const userId = localStorage.getItem('userId');
 
@@ -78,10 +104,6 @@ function ContactInfo() {
   e.preventDefault();
   if (phone && direccion) {
     try {
-      const token = localStorage.getItem('authToken');
-      const userId = localStorage.getItem('userId');
-      const contactId = localStorage.getItem('contactId');
- 
       if (token && userId && contactId) {
         console.log('User ID:', userId);
         console.log('Contact ID:', contactId);
@@ -102,6 +124,7 @@ function ContactInfo() {
         });
  
         console.log('Objeto devuelto por mi backend:', response);
+        setContactInfo(response.data.data)
       }
     } catch (error) {
       console.error('Error al actualizar el contacto:', error);
@@ -131,56 +154,55 @@ function ContactInfo() {
    console.error('Error al eliminar el contacto:', error);
   }
  };
- 
 
+ const fieldsToShow = ['phone', 'direccion', 'user_email', 'user_username', 'user_firstname', 'user_lastname'];
+ const displayNames = ['Teléfono', 'Dirección', 'Correo', 'Usuario', 'Nombre', 'Apellidos'];
+ 
  return (
-  <div>
-    <h1>Crear tu Propio Contacto</h1>
+  <div className='wrapper'>
+    <h1>Añadir Teléfono y Dirección a mi Contacto</h1>
     <form onSubmit={handleSubmit}>
-      <label htmlFor="phone">Phone:</label>
+      <label htmlFor="phone">Teléfono:</label>
       <input
         type="text"
         value={phone}
         onChange={e => setPhone(e.target.value)}
         required
       />
-      <label htmlFor="direccion">Direccion:</label>
+      <label htmlFor="direccion">Dirección:</label>
       <input
         type="text"
         value={direccion}
         onChange={e => setDireccion(e.target.value)}
         required
       />
-      <button
+      <button className='botton'
         type="submit"
-        style={{ padding: '10px 20px', backgroundColor: 'blue', color: 'white', border: 'none', borderRadius: '5px' }}
       >
         Crear Contacto
       </button>
-      <button
+      <button className='botton'
         type="submit"
         onClick={handleUpdate}
-        style={{ padding: '10px 20px', backgroundColor: 'green', color: 'white', border: 'none', borderRadius: '5px' }}
       >
         Actualizar Contacto
       </button>
-      <button
+      <button className='botton'
         type="button"
         onClick={handleDelete}
-        style={{ padding: '10px 20px', backgroundColor: 'red', color: 'white', border: 'none', borderRadius: '5px' }}
       >
         Eliminar Contacto
       </button>
     </form>
-    <div>
-      <h1> Tu Contact Info</h1>
-      {contactInfo && Object.keys(contactInfo).map(key => (
-        <p key={key}>{key}: {contactInfo[key]}</p>
-      ))}
-    </div>
+    <div className='containercontact'>
+ <h1 className='titlecontact'>Info de mi Contacto</h1>
+ {contactinfo && Object.keys(contactinfo).filter(key => fieldsToShow.includes(key)).map((key, index) => (
+ <p key={key} className='info'>{displayNames[index]}: {contactinfo[key]}</p>
+ ))}
+</div>
   </div>
  );
- 
+  
 };
 
 export default ContactInfo;

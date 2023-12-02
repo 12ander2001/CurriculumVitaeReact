@@ -119,11 +119,14 @@ function CurriculumVitae(){
     }
    };
 
+   const fieldsToShow = ['description'];
+  const displayNames = ['Nombre'];
+
  return (
- <div>
+ <div className='wrapper'>
    <h1>Crear tu Propio Currículo</h1>
    <form onSubmit={handleSubmit}>
-   <label htmlFor="nameinst">Name Curriculum:</label>
+   <label htmlFor="nameinst">Nombre:</label>
      <input
        type="text"
        value={description}
@@ -132,34 +135,31 @@ function CurriculumVitae(){
      />
      <button
        type="submit"
-       style={{ padding: '10px 20px', backgroundColor: 'blue', color: 'white', border: 'none', borderRadius: '5px' }}
      >
        Crear Currículo
      </button>
    </form>
-   <h1>Actualizar, Eliminar o Visualizar Currículo</h1>
   <form>
     <button
       type="button"
       onClick={handleUpdate}
-      style={{ padding: '10px 20px', backgroundColor: 'green', color: 'white', border: 'none', borderRadius: '5px' }}
     >
       Actualizar Currículo
     </button>
     <button
       type="button"
       onClick={handleDelete}
-      style={{ padding: '10px 20px', backgroundColor: 'red', color: 'white', border: 'none', borderRadius: '5px' }}
     >
       Eliminar Currículo
     </button>
   </form>
-  <div>
-      <h1> Tu Nombre de Curriculo</h1>
-      {curriculumId && Object.keys(curriculumId).map(key => (
-        <p key={key}>{key}: {curriculumId[key]}</p>
-      ))}
-    </div>
+  <div className='containercontact'>
+ <h1 className='titlecontact'>Nombre del Currículo</h1>
+ {console.log (curriculumId)}
+ {curriculumId && Object.keys(curriculumId).filter(key => fieldsToShow.includes(key)).map((key, index) => (
+ <p key={key} className='info'>{displayNames[index]}: {curriculumId[key]}</p>
+ ))}
+</div>
  </div>
  );
 };

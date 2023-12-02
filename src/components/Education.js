@@ -159,44 +159,46 @@ const handleLinkClick = (event, link) => {
  };
 
  return (
- <div>
- <h2>Education</h2>
+ <div className='wrapper'>
+ <h1>Educación</h1>
  {error && <p>{error}</p>}
  <form onSubmit={handleSubmit}>
  <label>
-  Nameinst:
+  Nombre de la Institución:
   <input type="text" value={nameinst} onChange={(e) => setNameinst(e.target.value)} />
  </label>
  <label>
-  Title:
+  Título:
   <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
  </label>
  <label>
-  Range:
+  Rango:
   <input type="text" value={range} onChange={(e) => setRange(e.target.value)} />
  </label>
  <label>
-  Curse:
+  Curso:
   <input type="text" value={curse} onChange={(e) => setCurse(e.target.value)} />
  </label>
  <label>
-  Description:
+  Descripción:
   <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} />
  </label>
- <button type="submit" style={{ padding: '10px 20px', backgroundColor: 'blue', color: 'white', border: 'none', borderRadius: '5px' }}>Insertar</button>
+ <button type="submit" >Insertar</button>
  </form>
- <h1> Educación</h1>
+ <div className='containercontact'>
+ <h1 className='titlecontact'>Mis Educaciones</h1>
   {education.map((link) => (
  <li key={link.id}>
- <a href={link.title} onClick={(event) => handleLinkClick(event, link)}>Nombre de la Institución: {link.nameinst}</a>
- <p>Título: {link.title}</p>
- <p>Rango: {link.range}</p>
- <p>Curso: {link.curse}</p>
- <p>Descripción: {link.description}</p>
- <button type="button" onClick={() => handleUpdate(link.id)} style={{ padding: '10px 20px', backgroundColor: 'green', color: 'white', border: 'none', borderRadius: '5px' }}>Actualizar</button>
- <button type="button" onClick={() => handleDelete(link.id)} style={{ padding: '10px 20px', backgroundColor: 'red', color: 'white', border: 'none', borderRadius: '5px' }}>Eliminar</button>
+ <a href={link.title} className='info' onClick={(event) => handleLinkClick(event, link)}>Nombre de la Institución: {link.nameinst}</a>
+ <p className='info'>Título: {link.title}</p>
+ <p className='info'>Rango: {link.range}</p>
+ <p className='info'>Curso: {link.curse}</p>
+ <p className='info'>Descripción: {link.description}</p>
+ <button type="button" onClick={() => handleUpdate(link.id)} >Actualizar</button>
+ <button type="button" onClick={() => handleDelete(link.id)} >Eliminar</button>
 </li>
 ))}
+</div>
  </div>
  );
 };

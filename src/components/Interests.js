@@ -135,24 +135,26 @@ const handleLinkClick = (event, link) => {
  };
 
  return (
- <div>
- <h2>Interests</h2>
+ <div className='wrapper'>
+ <h1>Interes</h1>
  {error && <p>{error}</p>}
  <form onSubmit={handleSubmit}>
  <label>
- Name:
+ Descripción:
  <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
  </label>
- <button type="submit" style={{ padding: '10px 20px', backgroundColor: 'blue', color: 'white', border: 'none', borderRadius: '5px' }}>Insertar</button>
+ <button type="submit" >Insertar</button>
  </form>
- <h1> Intereses</h1>
+ <div className='containercontact'>   
+ <h1 className='titlecontact'>Mis Intereses</h1>
   {interests.map((link) => (
  <li key={link.id}>
- <a href={link.name} onClick={(event) => handleLinkClick(event, link)}>Nombre: {link.name}</a>
- <button type="button" onClick={() => handleUpdate(link.id)} style={{ padding: '10px 20px', backgroundColor: 'green', color: 'white', border: 'none', borderRadius: '5px' }}>Actualizar</button>
- <button type="button" onClick={() => handleDelete(link.id)} style={{ padding: '10px 20px', backgroundColor: 'red', color: 'white', border: 'none', borderRadius: '5px' }}>Eliminar</button>
+ <a href={link.name}  className='info' onClick={(event) => handleLinkClick(event, link)}>{link.name}</a>
+ <button type="button" onClick={() => handleUpdate(link.id)} >Actualizar</button>
+ <button type="button" onClick={() => handleDelete(link.id)} >Eliminar</button>
 </li>
 ))}
+</div>
  </div>
  );
 };

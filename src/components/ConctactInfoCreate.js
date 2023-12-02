@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import SocialLinks from './SocialLinks';
 import ContactInfo from './ContactInfo';
+import './ContactInfo.css'
 
 const ConctactInfoCreate = () => {
  const navigate = useNavigate();
@@ -18,12 +19,11 @@ const ConctactInfoCreate = () => {
 
  
  return (
-  <div>
-    <h1>ContactInfo Create</h1>
+  <div className='homePage'>
     <ContactInfo />
     <SocialLinks />
 
-    <button type='button' onClick={handleClick} style={{ padding: '10px 20px', backgroundColor: 'black', color: 'white', border: 'none', borderRadius: '5px' }}>Finalizar Contacto</button>
+    <button type='button' onClick={handleClick} >Finalizar Contacto</button>
   </div>
  );
 };

@@ -5,6 +5,7 @@ import Education from './Education';
 import Interests from './Interests';
 import Skills from './Skills';
 import CurriculumVitae from './CurriculumVitae';
+import './ContactInfo.css'
 
 const CurriculumVitaeForm = () => {
  const navigate = useNavigate();
@@ -14,8 +15,7 @@ const CurriculumVitaeForm = () => {
  }
 
  return (
-  <div>
-    <h1>Curriculum Vitae Form</h1>
+  <div className='homePage'>
     <CurriculumVitae />
     <WorkExperience />
     <Education />
