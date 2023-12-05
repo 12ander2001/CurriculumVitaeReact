@@ -4,63 +4,71 @@ import { useNavigate } from 'react-router-dom';
 import './LoginForm.css';
 
 const RegisterView = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [username, setUsername] = useState('');
-  const [firstname, setFirstname] = useState('');
-  const [lastname, setLastname] = useState('');
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    username: '',
+    firstname: '',
+    lastname: '',
+  });
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
+  const handleInputChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
   const handleRegister = async () => {
     try {
-      const response = await axios.post('http://localhost:8000/user/register/', {
-        email,
-        password,
-        username,
-        firstname,
-        lastname,
-      });
+      const response = await axios.post('http://localhost:8000/user/register/', formData);
       console.log(response.data); // Maneja la respuesta del backend según tus necesidades
       navigate('/');
     } catch (error) {
       setError(error.response.data.error);
     }
-  };  
+  };
 
   return (
     <div className="login-form">
       <h1>Registrar</h1>
-      {error && <p>{error}</p>}
+      {error && <p className="error-message">{error}</p>}
       <input
         type="email"
         placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        name="email"
+        value={formData.email}
+        onChange={handleInputChange}
       />
       <input
         type="password"
         placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
+        name="password"
+        value={formData.password}
+        onChange={handleInputChange}
       />
       <input
         type="text"
         placeholder="Username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
+        name="username"
+        value={formData.username}
+        onChange={handleInputChange}
       />
       <input
         type="text"
         placeholder="First Name"
-        value={firstname}
-        onChange={(e) => setFirstname(e.target.value)}
+        name="firstname"
+        value={formData.firstname}
+        onChange={handleInputChange}
       />
       <input
         type="text"
         placeholder="Last Name"
-        value={lastname}
-        onChange={(e) => setLastname(e.target.value)}
+        name="lastname"
+        value={formData.lastname}
+        onChange={handleInputChange}
       />
       <button onClick={handleRegister}>Registrarse</button>
     </div>
